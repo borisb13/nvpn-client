@@ -22,7 +22,7 @@ else
     echo "${OVPN_PASSWORD}" >> /etc/openvpn/creds.txt
     chmod 600 /etc/openvpn/creds.txt
 
-    #sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /etc/openvpn/config.opvn
+    sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /etc/openvpn/config.opvn
 fi
 
 if [ -n ${LOCAL_NETWORKS} ] ; then
@@ -34,4 +34,4 @@ if [ -n ${LOCAL_NETWORKS} ] ; then
 fi
 
 echo "Running OpenVPN"
-exec openvpn /etc/openvpn/config.opvn --auth-user-pass /etc/openvpn/creds.txt
+exec openvpn /etc/openvpn/config.opvn
