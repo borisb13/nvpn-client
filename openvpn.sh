@@ -4,12 +4,14 @@ echo "Creating tun device"
 mkdir -p /dev/net
 [[ -c /dev/net/tun ]] || mknod /dev/net/tun c 10 200
 
+cp /config/server.ovpn /etc/openvpn/config.opvn
+
 # Add Alpine scripts to configure resolve.conf
 sed -i \
   -e "/auth-user-pass/a script-security 2" \
   -e "/auth-user-pass/a up /etc/openvpn/up.sh" \
   -e "/auth-user-pass/a down /etc/openvpn/down.sh" \
-  /config/server.ovpn
+  /etc/openvpn/config.opvn
 
 if  [ -z ${OVPN_USERNAME} ] || [ -z ${OVPN_PASSWORD} ] ; then
     echo "OpenVPN credentials not set. Exiting"
@@ -20,7 +22,7 @@ else
     echo "${OVPN_PASSWORD}" >> /etc/openvpn/creds.txt
     chmod 600 /etc/openvpn/creds.txt
 
-    sed -i "s/auth-user-pass/auth-user-pass /etc/openvpn/creds.txt" /config/server.opvn
+    #sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /etc/openvpn/config.opvn
 fi
 
 if [ -n ${LOCAL_NETWORKS} ] ; then
@@ -32,4 +34,4 @@ if [ -n ${LOCAL_NETWORKS} ] ; then
 fi
 
 echo "Running OpenVPN"
-exec openvpn /config/server.ovpn
+exec openvpn /etc/openvpn/config.opvn --auth-user-pass /etc/openvpn/creds.txt
