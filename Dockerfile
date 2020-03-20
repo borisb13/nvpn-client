@@ -5,4 +5,6 @@ RUN apk --no-cache --no-progress add \
 
 COPY openvpn.sh /usr/bin/
 
+VOLUME /config
+
 ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/openvpn.sh"]
