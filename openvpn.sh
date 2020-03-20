@@ -4,20 +4,6 @@ echo "Creating tun device"
 mkdir -p /dev/net
 [[ -c /dev/net/tun ]] || mknod /dev/net/tun c 10 200
 
-query_prefix='https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters=%7B%22country_id%22:'
-query_suffix=',%22servers_groups%22:%5B11%5D,%22servers_technologies%22:%5B3%5D%7D'
-country_code=${NVPN_COUNTRY_CODE:-228}
-
-if [ -z ${NVPN_HOST} ] ; then
-    echo "Determining best server for ${country_code}"
-    NVPN_HOST=$(curl -s "${query_prefix}${country_code}${query_suffix}" | jq -r '.[0]["hostname"]')
-fi
-
-case ${NVPN_PORT_TYPE} in
-    TCP) NVPN_PORT_NAME=tcp443 ;;
-    *) NVPN_PORT_NAME=udp1194 ;;
-esac
-
 # Add Alpine scripts to configure resolve.conf
 sed -i \
   -e "/auth-user-pass/a script-security 2" \
