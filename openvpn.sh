@@ -4,7 +4,8 @@ echo "Creating tun device"
 mkdir -p /dev/net
 [[ -c /dev/net/tun ]] || mknod /dev/net/tun c 10 200
 
-cp /config/server.ovpn /etc/openvpn/config.opvn
+#cp /config/server.ovpn /etc/openvpn/config.opvn
+curl -s "https://downloads.nordcdn.com/configs/files/ovpn_udp/servers/${SERVER}.nordvpn.com.${PORT_TYPE}.ovpn" > /etc/openvpn/config.opvn
 
 # Add Alpine scripts to configure resolve.conf
 sed -i \
