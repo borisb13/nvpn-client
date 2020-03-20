@@ -18,15 +18,12 @@ case ${NVPN_PORT_TYPE} in
     *) NVPN_PORT_NAME=udp1194 ;;
 esac
 
-echo "Server selected: ${NVPN_HOST} using ${NVPN_PORT_NAME}, retrieving config"
-curl -s "https://downloads.nordcdn.com/configs/files/ovpn_legacy/servers/${NVPN_HOST}.${NVPN_PORT_NAME}.ovpn" > /etc/openvpn/config.opvn
-
 # Add Alpine scripts to configure resolve.conf
 sed -i \
   -e "/auth-user-pass/a script-security 2" \
   -e "/auth-user-pass/a up /etc/openvpn/up.sh" \
   -e "/auth-user-pass/a down /etc/openvpn/down.sh" \
-  /etc/openvpn/config.opvn
+  /config/config.ovpn
 
 if  [ -z ${OVPN_USERNAME} ] || [ -z ${OVPN_PASSWORD} ] ; then
     echo "OpenVPN credentials not set. Exiting"
@@ -37,7 +34,7 @@ else
     echo "${OVPN_PASSWORD}" >> /etc/openvpn/creds.txt
     chmod 600 /etc/openvpn/creds.txt
 
-    sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /etc/openvpn/config.opvn
+    sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /config/config.ovpn
 fi
 
 if [ -n ${LOCAL_NETWORKS} ] ; then
@@ -49,4 +46,4 @@ if [ -n ${LOCAL_NETWORKS} ] ; then
 fi
 
 echo "Running OpenVPN"
-exec openvpn /etc/openvpn/config.opvn
+exec openvpn /config/config.ovpn
