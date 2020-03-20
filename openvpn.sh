@@ -9,7 +9,7 @@ sed -i \
   -e "/auth-user-pass/a script-security 2" \
   -e "/auth-user-pass/a up /etc/openvpn/up.sh" \
   -e "/auth-user-pass/a down /etc/openvpn/down.sh" \
-  /config/config.ovpn
+  /config/server.ovpn
 
 if  [ -z ${OVPN_USERNAME} ] || [ -z ${OVPN_PASSWORD} ] ; then
     echo "OpenVPN credentials not set. Exiting"
@@ -20,7 +20,7 @@ else
     echo "${OVPN_PASSWORD}" >> /etc/openvpn/creds.txt
     chmod 600 /etc/openvpn/creds.txt
 
-    #sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /config/config.ovpn
+    #sed -i "s:auth-user-pass:auth-user-pass /etc/openvpn/creds.txt:" /config/server.ovpn
 fi
 
 if [ -n ${LOCAL_NETWORKS} ] ; then
@@ -32,4 +32,4 @@ if [ -n ${LOCAL_NETWORKS} ] ; then
 fi
 
 echo "Running OpenVPN"
-exec openvpn /config/config.ovpn
+exec openvpn /config/server.ovpn
